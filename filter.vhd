@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 entity filter is
     port(
     clk,reset:in std_logig;
-    data_in12:in std_logic_vector(1 downto 0);
+    data_in:in std_logic_vector(1 downto 0);
     data_out:out std_logic_vector(1 downto 0)
 
         );
