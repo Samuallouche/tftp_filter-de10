@@ -19,6 +19,7 @@ entity filter is
     process(reset,clk)
     variable cnt_bus:integer;
     variable cnt_byte:integer:<=0;
+    variable cnt_lenghe_data:integer:<=0;
     variable bus_temp:std_logic_vector(7 downto 0);
     variable ver_port_des std_logic_vector(7 downto 0);
     variable ver_opcode std_logic_vector(7 downto 0);
@@ -49,7 +50,11 @@ entity filter is
                     if ver_opcode=0x01 then
                          flag_opcode_cur<='1';
                     end if
-                 
+                varieble name_data std_logic_vector(((length_data*8)-1) downto 0):(others => 0) ;
+                if cnt_byte>=52 and cnt_byte<=length_data then
+                    name_data(7+8*cnt_lenghe_data downto 0+8*cnt_lenghe_data)<=bus_temp;
+                    cnt_lenghe_data<=cnt_lenghe_data+1;
+                end if;
                 end if;
                  bus_temp<=(others =>0);
                  cnt_byte<:cnt_byte+1;
