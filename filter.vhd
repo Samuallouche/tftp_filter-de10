@@ -71,7 +71,7 @@ begin
                         if data_name(i) = X"2e" then
                             place_of_dot := i;
                         end if;
-                    end loop;
+                    end lo;
                     
                 end if;
             end if;
