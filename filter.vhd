@@ -1,5 +1,9 @@
-library ieee;
-use ieee.std_logic_1164.all;
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
 
 entity filter is
     port (
@@ -25,7 +29,7 @@ begin
         variable bus_temp              : std_logic_vector(7 downto 0);
         variable ver_port_des          : std_logic_vector(7 downto 0);
         variable ver_opcode            : std_logic_vector(7 downto 0);
-        variable length_data           : std_logic_vector(7 downto 0);
+        variable length_data           : integer;
         variable flag_port_cur         : std_logic := '0';
         variable flag_opcode_cur       : std_logic := '0';
         variable flag_length_data_cur  : std_logic := '0';
@@ -52,22 +56,22 @@ begin
                     end if;
                 end if;
                 if cnt_byte = 47 then
-                    length_data := bus_temp;
+                    length_data := to_integer(unsigned(bus_temp));
                 end if;
                 if cnt_byte = 51 and flag_port_cur = '1' then
                     if ver_opcode = X"01" then
                         flag_opcode_cur := '1';
                     end if;
                 end if;
-                if cnt_byte >= 52 and cnt_byte <= (52 + to_integer(unsigned(length_data))) then
+                if cnt_byte >= 52 and cnt_byte <=(52 +length_data)then
                     data_name(cnt_lenghe_data) := bus_temp;
                     cnt_lenghe_data := cnt_lenghe_data + 1;
-                    if cnt_byte = (52 + to_integer(unsigned(length_data))) then
+                    if cnt_byte = (52 +length_data) then
                         flag_load_data := '1';
                     end if;
                 end if;
                 if flag_load_data = '1' then
-                    for i in 0 to to_integer(unsigned(length_data)) loop
+                    for i in 0 to (length_data) loop
                         if data_name(i) = X"2e" then
                             place_of_dot := i;
                         end if;
