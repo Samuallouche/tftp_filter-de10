@@ -1,24 +1,21 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
-use IEEE.STD_LOGIC_UNSIGNED.ALL;
-use IEEE.NUMERIC_STD.ALL;
+use ieee.numeric_std.all;
 
 
-entity filter is
+entity tftp_filte_part is
     port (
         clk, reset: in std_logic;
         data_in: in std_logic_vector(1 downto 0);
         data_out: out std_logic_vector(1 downto 0)
     );
-end entity filter;
+end entity tftp_filte_part;
 
-architecture beh of filter is
+architecture beh of tftp_filte_part is
     signal port_des          : std_logic_vector(7 downto 0);
     signal opcode            : std_logic_vector(7 downto 0);
-    signal length_data_name  : std_logic_vector(7 downto 0);
-    type DynamicArray is array (integer range <>) of std_logic;
-    variable data_name       : DynamicArray(0 to 7) := (others => '0');
+      type element is array (0 to 4) of STD_LOGIC_VECTOR(7 downto 0);
+    signal data_type : element := (others => (others => '0'));
     variable place_of_dot    : integer;
 
 begin
@@ -29,11 +26,14 @@ begin
         variable bus_temp              : std_logic_vector(7 downto 0);
         variable ver_port_des          : std_logic_vector(7 downto 0);
         variable ver_opcode            : std_logic_vector(7 downto 0);
-        variable length_data           : integer;
+        variable length_total           : integer;
+		  variable length_data           : integer;
+		  variable cnt_type_data           : integer:= 0;
         variable flag_port_cur         : std_logic := '0';
         variable flag_opcode_cur       : std_logic := '0';
         variable flag_length_data_cur  : std_logic := '0';
-        variable flag_load_data        : std_logic := '0';  -- Added this variable
+        variable flag_load_data        : std_logic := '0';
+  -- Added this variable
 
     begin
         if reset = '1' then
@@ -56,34 +56,26 @@ begin
                     end if;
                 end if;
                 if cnt_byte = 47 then
-                    length_data := to_integer(unsigned(bus_temp));
+                    length_total := to_integer(unsigned(bus_temp));
                 end if;
                 if cnt_byte = 51 and flag_port_cur = '1' then
                     if ver_opcode = X"01" then
                         flag_opcode_cur := '1';
                     end if;
                 end if;
-                if cnt_byte >= 52 and cnt_byte <=(52 +length_data)then
-                    data_name(cnt_lenghe_data) := bus_temp;
-                    cnt_lenghe_data := cnt_lenghe_data + 1;
-                    if cnt_byte = (52 +length_data) then
-                        flag_load_data := '1';
-                    end if;
-                end if;
-                if flag_load_data = '1' then
-                    for i in 0 to (length_data) loop
-                        if data_name(i) = X"2e" then
-                            place_of_dot := i;
-                        end if;
-                    end loop;
-                    
-                end if;
-            end if;
+					 length_data<= length_total-17;
+                if (cnt_byte >= 52+(length_data-5) and cnt_byte <=(52 +(length_data-1))) and flag_opcode_cur = '1' then
+						if (bus_temp=X"2e") then
+							flag_load_data <= '1';
+						end if;
+						if flag_load_data = '1' then
+							data_type(cnt_type_data)<= bus_temp;
+						end if;
+            
             bus_temp := (others => '0');
             cnt_byte := cnt_byte + 1;
             data_out <= data_in;
             port_des <= ver_port_des;
-            length_data_name <= length_data - 16;
         end if;
     end process;
 end architecture;
