@@ -86,7 +86,8 @@ begin
 
         bus_temp := (others => '0');
         cnt_byte := cnt_byte + 1;
-        data_out <= data_in;
+        data_ou <= data_in;
+
         port_des <= ver_port_des;
     end process;
 end architecture;
