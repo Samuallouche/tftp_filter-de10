@@ -18,14 +18,14 @@ architecture beh of tftp_filte_part is
 
 begin
     process (reset, clk)
-        variable cnt_bus               : integer;
+        variable cnt_bus               : integer:= 0;
         variable cnt_byte              : integer := 0;
         variable cnt_lenghe_data       : integer := 0;
         variable bus_temp              : std_logic_vector(7 downto 0);
         variable ver_port_des          : std_logic_vector(7 downto 0);
         variable ver_opcode            : std_logic_vector(7 downto 0);
-        variable length_total          : integer;
-        variable length_data           : integer;
+        variable length_total          : integer:= 0;
+        variable length_data           : integer:= 0;
         variable cnt_type_data         : integer:= 0;
         variable flag_port_cur         : std_logic := '0';
         variable flag_opcode_cur       : std_logic := '0';
@@ -51,10 +51,9 @@ begin
             bus_temp(cnt_bus) := data_in(0);
             bus_temp(cnt_bus + 1) := data_in(1);
             cnt_bus := cnt_bus + 2;
-
             if cnt_bus = 8 then
                 cnt_bus := 0;
-
+					
                 if cnt_byte = 45 then
                     ver_port_des := bus_temp;
                     if ver_port_des = X"45" then
