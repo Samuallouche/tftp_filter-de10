@@ -2,20 +2,19 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
 
-entity tftp_filter_part is
+entity tftp_filte_part is
     port (
         clk, reset: in std_logic;
         data_in: in std_logic_vector(1 downto 0);
         data_out: out std_logic_vector(1 downto 0)
     );
-end entity tftp_filter_part;
+end tftp_filte_part;
 
-architecture beh of tftp_filter_part is
+architecture beh of tftp_filte_part is
     signal port_des          : std_logic_vector(7 downto 0);
     signal opcode            : std_logic_vector(7 downto 0);
     type Element is array (0 to 4) of STD_LOGIC_VECTOR(7 downto 0);
     signal data_type : Element := (others => (others => '0'));
-    variable place_of_dot    : integer;
 
 begin
     process (reset, clk)
@@ -89,4 +88,4 @@ begin
         data_out <= data_in;
         port_des <= ver_port_des;
     end process;
-end architecture;
+end beh;
