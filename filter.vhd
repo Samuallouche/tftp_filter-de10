@@ -34,7 +34,7 @@ begin
         variable flag_load_data        : std_logic := '0';
     begin
         if reset = '1' then
-            cnt_bus := 0;
+            cnt_bus := 7;
             cnt_byte := 0;
             cnt_lenghe_data := 0;
             bus_temp := (others => '0');
@@ -51,11 +51,11 @@ begin
             flag_load_data := '0';
             data_type <= (others => (others => '0'));
         elsif rising_edge(clk) then
-            bus_temp(cnt_bus) := data_in(0);
-            bus_temp(cnt_bus + 1) := data_in(1);
-            cnt_bus := cnt_bus + 2;
-            if cnt_bus > 7 then
-                cnt_bus := 0;
+            bus_temp(cnt_bus -1) := data_in(0);
+            bus_temp(cnt_bus) := data_in(1);
+            cnt_bus := cnt_bus - 2;
+            if cnt_bus < 1 then
+                cnt_bus := 7;
                 if cnt_byte = 45 then
                     ver_port_des <= bus_temp;
 						  --:
