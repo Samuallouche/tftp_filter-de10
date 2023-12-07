@@ -40,7 +40,7 @@ begin
             bus_temp := (others => '0');
             ver_port_des <= (others => '0');
 				--:
-            ver_opcode <= (others => '0');
+            ver_opcode := (others => '0');
 				--:
             length_total := 0;
             length_data := 0;
@@ -91,3 +91,8 @@ begin
 				  port_des <= ver_port_des;
     end process;
 end beh;
+
+
+
+
+
