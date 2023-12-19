@@ -20,33 +20,35 @@ architecture beh of tftp_filte_part is
 	 signal cnt_bus               : integer:= 0;
 	 signal cnt_fifo               : integer:= 0;
 	 signal cnt1_fifo               : integer:= 0;
-
-
+	signal end_of_packet_tftp :std_logic:='0';
+	signal fifo_input:std_logic:='0';
+	signal fifo_output:std_logic:='0';
 	 --signal bus_temp              : std_logic_vector(7 downto 0);
-	signal flag_finish_pack :std_logic:='0';
+	signal flag_cur_type :std_logic:='0';
 	signal cnt_byte              : integer:= 0;
+	signal length_total_pack     :integer:=0;
 	--signal ver_opcode            : std_logic_vector(7 downto 0);
 
 	component fifo_part
 	PORT
 	(
 		clock		: IN STD_LOGIC ;
-		data		: IN STD_LOGIC_VECTOR (7 DOWNTO 0);
+		data		: IN STD_LOGIC_VECTOR (1 DOWNTO 0);
 		rdreq		: IN STD_LOGIC ;
 		sclr		: IN STD_LOGIC ;
 		wrreq		: IN STD_LOGIC ;
 		empty		: OUT STD_LOGIC ;
 		full		: OUT STD_LOGIC ;
 		almost_full : OUT STD_LOGIC ;
-		q		: OUT STD_LOGIC_VECTOR (7 DOWNTO 0)
+		q		: OUT STD_LOGIC_VECTOR (1 DOWNTO 0)
 	);
 end component;
 	signal read_req:std_logic:='0';
 	signal write_req:std_logic:='0';
 	signal fifo_empty:std_logic;
 	signal fifo_full:std_logic;
-	signal d_out:STD_LOGIC_vector(7 downto 0);
-	signal d_in:STD_LOGIC_vector(7 downto 0);
+	signal d_out:STD_LOGIC_vector(1 downto 0);
+	signal d_in:STD_LOGIC_vector(1 downto 0);
 	signal upload_max:std_logic;
 	signal fifo_reset:std_logic;
 	
@@ -80,9 +82,9 @@ fifo_part_inst : fifo_part PORT MAP (
         variable flag_load_data        : std_logic := '0';
     begin
         if reset = '1' then
+		  end_of_packet_tftp<='0';
             cnt_bus <= 0;
             cnt_byte <= 0;
-				flag_finish_pack <='0';
             cnt_lenghe_data := 0;
             bus_temp := (others => 'U');
             ver_port_des := (others => '0');
@@ -126,7 +128,18 @@ fifo_part_inst : fifo_part PORT MAP (
                            cnt_type_data := cnt_type_data + 1;
 						   end if;
 						elsif(cnt_byte = (48+length_total-5)) and flag_port_cur = '1' and flag_opcode_cur = '1' then
-							flag_finish_pack<='1';
+							if (data_type(0)=X"74") then
+								flag_cur_type<='1';
+								end_of_packet_tftp<='1';
+								--fifo_input='0';
+								--fifo_output='1';
+							else
+								flag_cur_type<='0';
+								end_of_packet_tftp<='1';
+								--fifo_reset='1';
+								--fifo_input='0';
+								--fifo_output='0';
+							end if;
 							end if;
 						  cnt_byte<=cnt_byte+1;
 					else
@@ -134,77 +147,36 @@ fifo_part_inst : fifo_part PORT MAP (
 					end if;
 			end if;
 		end if;
+		length_total_pack<=length_total;
     end process;
-	fifo_process:process(clk,flag_finish_pack,reset)
+	 
+	 
+	 
+	 
+	 
+	  fifo_process:process(clk,flag_cur_type,reset)
 	  begin
 	  if reset='1' then
-		write_req<='0';
+		write_req<='1';
 		read_req<='0';
 		elsif rising_edge(clk) then
-		if (flag_finish_pack='0' or upload_max='0')then
-			write_req <= '0';
-			if data_in/="UU" then
-				write_req <= '1';
+		if data_in/="UU" then-- to change to a rmii signal that indicat that its streaming
 				d_in<=data_in;
 			end if;
-		elsif (flag_finish_pack='1') or (upload_max='1') then
-		read_req<='0';
-		if fifo_empty='0' then
-		read_req<='1';
-		data_out<= d_out;
-		end if;
-		end if;
-	  end if;
+			if flag_cur_type='1' and end_of_packet_tftp<='1' then--a stats that the type is good and we done read a tftp type packet
+				write_req <= '0';
+				read_req<='1';
+				data_out<= d_out;
+			elsif flag_cur_type='0' and end_of_packet_tftp<='1' then-- a state that the is isnt good and we done reading the tftp packet
+				fifo_reset<='1';
+				write_req <= '0';
+
+			elsif cnt_byte > (48+length_total_pack-5) and end_of_packet_tftp<='0' then--a state that its not  a tftp pack so we start take out the data
+				write_req <= '1';
+				read_req<='1';
+				data_out<= d_out;
+			end if;
+				
+	end if;
 	  end process;	
 end beh;
-
-
-
-
-
-/**
- fifo_process:process(clk,flag_finish_pack,reset)
-	 variable bus_temp_fifo  : std_logic_vector(7 downto 0);
-	 variable flag_restart_fifo:std_logic:='1';
-	 begin
-	 if reset='1' then
-		cnt_fifo <= 0;
-		cnt1_fifo<=0;
-		write_req<='0';
-		fifo_reset <='1';
-		flag_restart_fifo:='1';
-		bus_temp_fifo := (others => 'U');
-	 elsif (rising_edge(clk)) then
-		fifo_reset<='0';
-	   if((flag_finish_pack='0' or upload_max='0') ) then
-		
-			if data_in/="UU" then
-				write_req <= '0';
-            bus_temp_fifo(cnt_fifo) := data_in(0);
-            bus_temp_fifo(cnt_fifo + 1) := data_in(1);
-					if cnt_fifo = 6 then
-					cnt_fifo<=0;
-					write_req <= '1';
-					d_in <=bus_temp_fifo;
-					end if;
-					cnt_fifo <= cnt_fifo +	2;
-			end if;
-		elsif (((flag_finish_pack='1') or (upload_max='1') )and flag_restart_fifo='1')  then 
-			if fifo_empty='1' then
-				fifo_reset<='1';
-				flag_restart_fifo:='0';
-			end if;
-			read_req<='1';
-			data_out(0)<= d_out(cnt1_fifo);
-			data_out(1)<= d_out(cnt1_fifo+1);
-			if cnt1_fifo=6 then
-				cnt1_fifo<=0;
-				read_req<='0';
-			end if;
-			cnt1_fifo<=cnt1_fifo+2;
-			
-		end if;
-		end if;
-	 end process;
-
-**/
