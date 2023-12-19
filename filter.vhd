@@ -135,7 +135,35 @@ fifo_part_inst : fifo_part PORT MAP (
 			end if;
 		end if;
     end process;
-	 fifo_process:process(clk,flag_finish_pack,reset)
+	fifo_process:process(clk,flag_finish_pack,reset)
+	  begin
+	  if reset='1' then
+		write_req<='0';
+		read_req<='0';
+		elsif rising_edge(clk) then
+		if (flag_finish_pack='0' or upload_max='0')then
+			write_req <= '0';
+			if data_in/="UU" then
+				write_req <= '1';
+				d_in<=data_in;
+			end if;
+		elsif (flag_finish_pack='1') or (upload_max='1') then
+		read_req<='0';
+		if fifo_empty='0' then
+		read_req<='1';
+		data_out<= d_out;
+		end if;
+		end if;
+	  end if;
+	  end process;	
+end beh;
+
+
+
+
+
+/**
+ fifo_process:process(clk,flag_finish_pack,reset)
 	 variable bus_temp_fifo  : std_logic_vector(7 downto 0);
 	 variable flag_restart_fifo:std_logic:='1';
 	 begin
@@ -178,4 +206,5 @@ fifo_part_inst : fifo_part PORT MAP (
 		end if;
 		end if;
 	 end process;
-end beh;
+
+**/
