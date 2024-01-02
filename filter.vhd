@@ -28,6 +28,7 @@ architecture beh of tftp_filte_part is
 	signal cnt_byte              : integer:= 0;
 	signal length_total_pack     :integer:=0;
 	--signal ver_opcode            : std_logic_vector(7 downto 0);
+	signal im_here :std_logic:='0';
 
 	component fifo_part
 	PORT
@@ -43,8 +44,8 @@ architecture beh of tftp_filte_part is
 		q		: OUT STD_LOGIC_VECTOR (1 DOWNTO 0)
 	);
 end component;
-	signal read_req:std_logic:='0';
-	signal write_req:std_logic:='0';
+	signal read_req:std_logic;
+	signal write_req:std_logic;
 	signal fifo_empty:std_logic;
 	signal fifo_full:std_logic;
 	signal d_out:STD_LOGIC_vector(1 downto 0);
@@ -127,14 +128,16 @@ fifo_part_inst : fifo_part PORT MAP (
                           data_type(cnt_type_data) <= bus_temp;
                            cnt_type_data := cnt_type_data + 1;
 						   end if;
-						elsif(cnt_byte = (48+length_total-5)) and flag_port_cur = '1' and flag_opcode_cur = '1' then
-							if (data_type(0)=X"74") then
+						elsif(cnt_byte = (42+length_total)) and flag_port_cur = '1' and flag_opcode_cur = '1'  then
+							if (data_type(0)=X"2E") then -- לשנות לסוג הקובץ
 								flag_cur_type<='1';
+								im_here<='1';
 								end_of_packet_tftp<='1';
 								--fifo_input='0';
 								--fifo_output='1';
 							else
 								flag_cur_type<='0';
+								im_here<='1';
 								end_of_packet_tftp<='1';
 								--fifo_reset='1';
 								--fifo_input='0';
@@ -161,8 +164,10 @@ fifo_part_inst : fifo_part PORT MAP (
 		read_req<='0';
 		elsif rising_edge(clk) then
 		if data_in/="UU" then-- to change to a rmii signal that indicat that its streaming
+				write_req<='1';
 				d_in<=data_in;
 			end if;
+			if im_here = '1' then
 			if flag_cur_type='1' and end_of_packet_tftp<='1' then--a stats that the type is good and we done read a tftp type packet
 				write_req <= '0';
 				read_req<='1';
@@ -175,6 +180,7 @@ fifo_part_inst : fifo_part PORT MAP (
 				write_req <= '1';
 				read_req<='1';
 				data_out<= d_out;
+			end if;
 			end if;
 				
 	end if;
