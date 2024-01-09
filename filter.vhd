@@ -6,7 +6,8 @@ entity tftp_filte_part is
     port (
         clk, reset: in std_logic;
         data_in: in std_logic_vector(1 downto 0);
-        data_out: out std_logic_vector(1 downto 0)
+		  tx_en:out std_logic;
+        txd_out: out std_logic_vector(1 downto 0)
     );
 end tftp_filte_part;
 
@@ -165,13 +166,15 @@ fifo_part_inst : fifo_part PORT MAP (
 		elsif rising_edge(clk) then
 		if data_in/="UU" then-- to change to a rmii signal that indicat that its streaming
 				write_req<='1';
+				tx_en<='1';
 				d_in<=data_in;
 			end if;
 			if im_here = '1' then
 			if flag_cur_type='1' and end_of_packet_tftp<='1' then--a stats that the type is good and we done read a tftp type packet
 				write_req <= '0';
 				read_req<='1';
-				data_out<= d_out;
+				tx_en<='1';
+				txd_out<= d_out;
 			elsif flag_cur_type='0' and end_of_packet_tftp<='1' then-- a state that the is isnt good and we done reading the tftp packet
 				fifo_reset<='1';
 				write_req <= '0';
@@ -179,7 +182,7 @@ fifo_part_inst : fifo_part PORT MAP (
 			elsif cnt_byte > (48+length_total_pack-5) and end_of_packet_tftp<='0' then--a state that its not  a tftp pack so we start take out the data
 				write_req <= '1';
 				read_req<='1';
-				data_out<= d_out;
+				txd_out<= d_out;
 			end if;
 			end if;
 				
