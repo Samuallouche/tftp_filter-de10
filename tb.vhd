@@ -1,11 +1,12 @@
+
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;                              
 
 ENTITY tftp_filte_part_vhd_tst IS
 END tftp_filte_part_vhd_tst;
-ARCHITECTURE tftp_filte_part_arch OF tftp_filte_part_vhd_tst IS
--- constants                                                 
+ARCHITECTURE tftp_filte_part_arch OF tftp_filte_part_vhd_tst is         
 -- signals                                                   
 
     signal my_hex_value : std_logic_vector(567 downto 0) := X"ffffffffffffffffff13ff8dd78b43000bbe189a4008004500003000000000ff113965c0a800fdc0a8000ac5ba0045001c3e200001726663313335302e747874006f6374657400";
@@ -14,13 +15,16 @@ ARCHITECTURE tftp_filte_part_arch OF tftp_filte_part_vhd_tst IS
     SIGNAL data_in : STD_LOGIC_VECTOR(1 DOWNTO 0) := (others => '0');
     SIGNAL data_out : STD_LOGIC_VECTOR(1 DOWNTO 0);
     SIGNAL reset : STD_LOGIC := '0';
+    SIGNAL tx_en : STD_LOGIC;
+
 	 signal cnt_bus               : integer:= 0;
 	 signal bus_temp              : std_logic_vector(7 downto 0);
 COMPONENT tftp_filte_part
 	PORT (
 	clk : IN STD_LOGIC;
 	data_in : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-	data_out : BUFFER STD_LOGIC_VECTOR(1 DOWNTO 0);
+    tx_en : BUFFER STD_LOGIC;
+	txd_out : BUFFER STD_LOGIC_VECTOR(1 DOWNTO 0);
 	reset : IN STD_LOGIC
 	);
 END COMPONENT;
@@ -30,9 +34,11 @@ BEGIN
 -- list connections between master ports and signals
 	clk => clk,
 	data_in => data_in,
-	data_out => data_out,
-	reset => reset
+	reset => reset,
+	tx_en => tx_en,
+	txd_out => data_out
 	);
+
 process
 	begin
 	clk<='1';
@@ -63,4 +69,5 @@ PROCESS
 		  wait;
     END PROCESS;                                         
 END tftp_filte_part_arch;
+
 
