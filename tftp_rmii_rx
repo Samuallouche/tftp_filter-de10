@@ -1,0 +1,62 @@
+library ieee;
+use ieee.std_logic_1164.all;
+entity tftp_rmii_rx is
+port(
+clk:in std_logic;
+rx_d:in std_logic_vector(1 downto 0);
+rx_er:in std_logic;
+crs:in std_logic;
+valid_data:out std_logic;
+rx_error:out std_logic;
+data_out:out std_logic_vector(1 downto 0));
+
+end entity;
+
+architecture beh of tftp_rmii_rx is
+ 
+signal data_arr:bit;
+signal d_out:std_logic_vector(1 downto 0);
+signal crs_avaible:bit;
+
+ begin
+	 check_valid_data:process(clk,crs)
+	 variable cnt1:integer:=0;
+	 	 variable cnt:integer:=0;
+	 begin
+	 if crs='1' then
+			if rx_d="00" then
+				if rx_d="01" then
+					data_arr<='1';
+					cnt1:=cnt1+1;
+				end if;
+			end if;	
+		end if;
+	if crs='0' and cnt1>5 then
+		cnt:=cnt+1;
+		if cnt=2 then
+			data_arr<='0';
+			cnt:=0;
+			cnt1:=0;
+		end if;
+	end if;
+	if crs='0' and cnt1<5 then
+		data_arr<='0';
+	end if;
+	end process;
+	
+ transmit_data:process(clk,rx_er)
+ begin
+ if rising_edge(clk) then 
+	if data_arr='1' then
+			data_out<=rx_d;
+			valid_data<='1';
+		end if;
+	if data_arr='0'then
+		data_out<="00";
+		valid_data<='0';
+	end if;
+	end if;
+end process;
+ end beh;
+ 
+ 
