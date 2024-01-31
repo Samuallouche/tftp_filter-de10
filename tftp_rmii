@@ -7,15 +7,13 @@ rx_d:in std_logic_vector(1 downto 0);
 rx_er:in std_logic;
 crs:in std_logic;
 tx_en:out std_logic;
-data_out:out std_logic_vector(1 downto 0));
+tx_d:out std_logic_vector(1 downto 0));
 
 end entity;
 
 architecture beh of tftp_rmii_rx is
  
 signal data_arr:bit;
-signal d_out:std_logic_vector(1 downto 0);
-signal crs_avaible:bit;
 
  begin
 	 check_valid_data:process(clk,crs)
@@ -50,15 +48,13 @@ signal crs_avaible:bit;
 	
  transmit_data:process(clk)
  begin
- if rising_edge(clk) then 
-	if data_arr='1' then
-			data_out<=rx_d;
+	if data_arr='1' and clk='1' then	 
+			tx_d<=rx_d;
 			tx_en<='1';
-		end if;
-	if data_arr='0'then
-		data_out<="00";
-		tx_en<='0';
 	end if;
+	if data_arr='0' and clk='1'then	
+			tx_d<="00";
+			tx_en<='0';	
 	end if;
 end process;
  end beh;
