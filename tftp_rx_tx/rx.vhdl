@@ -6,8 +6,8 @@ clk:in std_logic;
 rx_d:in std_logic_vector(1 downto 0);
 rx_er:in std_logic;
 crs:in std_logic;
-tx_en:out std_logic;
-tx_d:out std_logic_vector(1 downto 0));
+tx_ok:out std_logic;
+tx_out:out std_logic_vector(1 downto 0));
 
 end entity;
 
@@ -49,12 +49,12 @@ signal data_arr:bit;
  transmit_data:process(clk)
  begin
 	if data_arr='1' and clk='1' then	 
-			tx_d<=rx_d;
-			tx_en<='1';
+			tx_out<=rx_d;
+			tx_ok<='1';
 	end if;
 	if data_arr='0' and clk='1'then	
-			tx_d<="00";
-			tx_en<='0';	
+			tx_out<="00";
+			tx_ok<='0';	
 	end if;
 end process;
  end beh;
