@@ -8,7 +8,6 @@ rx_er:in std_logic;
 crs:in std_logic;
 tx_en:out std_logic;
 tx_d:out std_logic_vector(1 downto 0));
-
 end entity top_rmii;
 
 architecture beh of top_rmii is 
