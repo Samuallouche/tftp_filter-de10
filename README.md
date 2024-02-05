@@ -5,4 +5,6 @@ https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/
 
 https://www.mouser.co.il/datasheet/2/268/50002610A-1369290.pdf
 
+file:///C:/Users/samue/Downloads/DE10-Nano_User_manual_a_b.pdf
+
 
