@@ -2,7 +2,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 entity way2_rmii is
 port(
-clk:buffer std_logic;
+clk:in std_logic;
+clk_out:out std_logic;
 rx_d_0:in std_logic_vector(1 downto 0);
 rx_er_0:in std_logic;
 crs_0:in std_logic;
@@ -26,6 +27,8 @@ tx_en:out std_logic;
 tx_d:out std_logic_vector(1 downto 0));
 end component;
 begin
+--------------------------------
+clk_out<=clk;
 -------------------------------------
 zero2one:top_rmii port map(
 clk => clk,
