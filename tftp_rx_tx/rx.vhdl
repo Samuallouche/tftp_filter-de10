@@ -14,12 +14,16 @@ end entity;
 architecture beh of tftp_rmii_rx is
  
 signal data_arr:bit;
+signal last_crs:std_logic:='1';
+signal check_mode:integer:=0;
+signal cnt_num_of_zero:integer:=0;
 
  begin
 	 check_valid_data:process(clk,crs)
 	 variable cnt1:integer:=0;
 	variable ok:integer:=0;
 	 	 variable cnt:integer:=0;
+		 
 	 begin
 	 if crs='1' then
 			if rx_d="01" and ok=1 then
@@ -29,18 +33,37 @@ signal data_arr:bit;
 				ok:=1;
 			end if;
 		end if;
+
 	if crs='0' and cnt1>8 then
-		cnt:=cnt+1;
-		if cnt=3 then
+		check_mode<=1;
+	end if;
+	if rising_edge(clk) then
+		if check_mode=1 then
+			if crs/=last_crs and last_crs='0' then
+	--if (check_mode=1) and (clk='1') then 
+		--if crs='0' then
+			--cnt_num_of_zero<=cnt_num_of_zero+1;
+		--end if;
+		--if crs='1' then
+		--	cnt_num_of_zero<=cnt_num_of_zero-1;
+		--end if;
+		--if crs/=last_crs then
+			--last_crs<=crs;
+		--elsif crs=last_crs and last_crs='0' then
 			data_arr<='0';
 			ok:=0;
+			check_mode<=0;
+			cnt_num_of_zero<=0;
 			cnt:=0;
 			cnt1:=0;
+			end if;
 		end if;
 	end if;
 	if crs='0' and cnt1<2 then
-		data_arr<='0';
+			data_arr<='0';
 			ok:=0;
+			check_mode<=0;
+			cnt_num_of_zero<=0;
 			cnt:=0;
 			cnt1:=0;
 	end if;
