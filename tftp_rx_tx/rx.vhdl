@@ -40,6 +40,7 @@ signal cnt_num_of_zero:integer:=0;
 	if rising_edge(clk) then
 		if check_mode=1 then
 			if crs/=last_crs and last_crs='0' then
+			
 	--if (check_mode=1) and (clk='1') then 
 		--if crs='0' then
 			--cnt_num_of_zero<=cnt_num_of_zero+1;
