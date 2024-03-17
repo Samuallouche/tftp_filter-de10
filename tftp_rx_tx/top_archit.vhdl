@@ -16,7 +16,6 @@ architecture beh of top_rmii is
     signal TX_OK_TEMP : std_logic;
     signal X_IN_OUT   : std_logic_vector(1 downto 0);
 
-    -------------------------------------------
     component tftp_rmii_rx is 
         port (
             clk   : in  std_logic;
@@ -28,7 +27,6 @@ architecture beh of top_rmii is
         );
     end component;
 
-    --------------------------------------------
     component tftp_rmii_tx is
         port (
             clk      : in  std_logic;
@@ -38,7 +36,6 @@ architecture beh of top_rmii is
             tx_d     : out std_logic_vector(1 downto 0)
         );
     end component;
-    -------------------------------------
 
 begin
     rx : tftp_rmii_rx port map (
@@ -50,7 +47,6 @@ begin
         crs   => crs
     );
 
-    -----------------------------------
     tx : tftp_rmii_tx port map (
         clk      => clk,
         tx_ok    => TX_OK_TEMP,

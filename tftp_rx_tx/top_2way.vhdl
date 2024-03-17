@@ -16,7 +16,7 @@ entity way2_rmii is
         tx_en_1  : out std_logic;
         tx_d_1   : out std_logic_vector(1 downto 0)
     );
-end entity;
+end entity way2_rmii;
 
 architecture beh1 of way2_rmii is
 
@@ -35,6 +35,7 @@ begin
     --------------------------------
     clk_out <= clk;
     -------------------------------------
+
     zero2one : top_rmii port map (
         clk   => clk,
         rx_d  => rx_d_0,
@@ -44,7 +45,6 @@ begin
         tx_d  => tx_d_1
     );
 
-    --------------------------------------------
     one2zero : top_rmii port map (
         clk   => clk,
         rx_d  => rx_d_1,
