@@ -26,11 +26,14 @@ architecture beh1 of way2_rmii is
             rx_d  : in  std_logic_vector(1 downto 0);
             rx_er : in  std_logic;
             crs   : in  std_logic;
-            tx_en : out std_logic;
-            tx_d  : out std_logic_vector(1 downto 0)
+            tx_en_f : out std_logic;
+            tx_d_f  : out std_logic_vector(1 downto 0)
         );
     end component;
-
+		--signal tx_en1_2_0 :std_logic;
+		--signal tx_en0_2_1 :std_logic;
+		--signal data1_2_0  :std_logic_vector(1 downto 0);
+		--signal data0_2_1  :std_logic_vector(1 downto 0);
 begin
     --------------------------------
     clk_out <= clk;
@@ -41,8 +44,8 @@ begin
         rx_d  => rx_d_0,
         rx_er => rx_er_0,
         crs   => crs_0,
-        tx_en => tx_en_1,
-        tx_d  => tx_d_1
+        tx_en_f => tx_en_1,
+        tx_d_f  => tx_d_1
     );
 
     one2zero : top_rmii port map (
@@ -50,8 +53,10 @@ begin
         rx_d  => rx_d_1,
         rx_er => rx_er_1,
         crs   => crs_1,
-        tx_en => tx_en_0,
-        tx_d  => tx_d_0
+        tx_en_f => tx_en_0,
+        tx_d_f  => tx_d_0 
     );
+	 
+	
 
 end beh1;

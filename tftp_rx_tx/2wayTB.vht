@@ -8,7 +8,7 @@ END way2_rmii_vhd_tst;
 ARCHITECTURE way2_rmii_arch OF way2_rmii_vhd_tst IS
 -- constants                                                 
 -- signals 
-signal my_hex_value : std_logic_vector(623 downto 0) := X"000000000000005555555555555555555713ff8dd78b43000bbe1a4008004500003000000000ff113965c0a800fdc0a8000ac5ba0045001c3e200001726663313335302e747874006f6374657400";
+signal my_hex_value : std_logic_vector(599 downto 0) := X"00000000000000005555555555555557f279eea4899c00e04c43c96508004500002d0693000080110000c0a80105c0a80101c8620045001983810001746578742e787874006f6374657400";
     signal my_value : std_logic_vector(7 downto 0);                                                    
 SIGNAL clk : STD_LOGIC;
 signal clk_out:std_logic;
@@ -59,9 +59,9 @@ init : PROCESS
 -- variable declarations                                     
 BEGIN                                                        
         -- code that executes only once                      
-wait for 40  ns;    
+wait for 80  ns;    
  crs_0<='1';
- wait for 3000 ns;
+ wait for 24640 ns;
  crs_0<='0';
  wait for 40 ns;
  crs_0<='1';
@@ -89,8 +89,9 @@ clk<='0';
 wait for 20 ns;    -- code executes for every event on sensitivity list                                                          
 END PROCESS always; 
 PROCESS                                                                                 
-BEGIN   
-   for i in 77 downto 0 loop 
+BEGIN
+		wait for 80  ns;    
+   for i in 74 downto 0 loop 
 	            my_value <= my_hex_value(i*8+7 downto i*8);                              
             for j in 0 to 3 loop
 					 rx_d_0(0) <= my_value(j*2);

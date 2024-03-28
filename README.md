@@ -1,10 +1,69 @@
-file:
-http://ebook.pldworld.com/_eBook/-Telecommunications,Networks-/TCPIP/RMII/rmii_rev12.pdf
-
-https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/DataSheets/KSZ8061RNB-RND-10BASE-T-100BASE-TX-PHY-00002197F.pdf
-
-https://www.mouser.co.il/datasheet/2/268/50002610A-1369290.pdf
-
-file:///C:/Users/samue/Downloads/DE10-Nano_User_manual_a_b.pdf
-
-
+ hps_0_f2h_cold_reset_req_reset_n1:std_logic  ;    
+ hps_0_f2h_debug_reset_req_reset_n1:std_logic  ;    
+ hps_0_f2h_stm_hw_events_stm_hwevents1:std_logic_vector(27 downto 0)  ; 
+ hps_0_f2h_warm_reset_req_reset_n1:std_logic;     
+ hps_0_hps_io_hps_io_emac1_inst_TX_CLK1:std_logic;
+ hps_0_hps_io_hps_io_emac1_inst_TXD01:std_logic;  
+ hps_0_hps_io_hps_io_emac1_inst_TXD11:std_logic;  
+ hps_0_hps_io_hps_io_emac1_inst_TXD21:std_logic;  
+ hps_0_hps_io_hps_io_emac1_inst_TXD31:std_logic;  
+ hps_0_hps_io_hps_io_emac1_inst_RXD01:std_logic;  
+ hps_0_hps_io_hps_io_emac1_inst_MDIO1:std_logic;  
+ hps_0_hps_io_hps_io_emac1_inst_MDC1:std_logic;   
+ hps_0_hps_io_hps_io_emac1_inst_RX_CTL1:std_logic;
+ hps_0_hps_io_hps_io_emac1_inst_TX_CTL1:std_logic;
+ hps_0_hps_io_hps_io_emac1_inst_RX_CLK1:std_logic;
+ hps_0_hps_io_hps_io_emac1_inst_RXD11:std_logic;  
+ hps_0_hps_io_hps_io_emac1_inst_RXD21:std_logic;  
+ hps_0_hps_io_hps_io_emac1_inst_RXD31:std_logic;  
+ hps_0_hps_io_hps_io_sdio_inst_CMD1:std_logic;    
+ hps_0_hps_io_hps_io_sdio_inst_D01:std_logic;     
+ hps_0_hps_io_hps_io_sdio_inst_D11:std_logic;     
+ hps_0_hps_io_hps_io_sdio_inst_CLK1:std_logic;    
+ hps_0_hps_io_hps_io_sdio_inst_D21:std_logic;     
+ hps_0_hps_io_hps_io_sdio_inst_D31:std_logic;     
+ hps_0_hps_io_hps_io_usb1_inst_D01:std_logic;     
+ hps_0_hps_io_hps_io_usb1_inst_D11:std_logic;     
+ hps_0_hps_io_hps_io_usb1_inst_D21:std_logic;     
+ hps_0_hps_io_hps_io_usb1_inst_D31:std_logic;     
+ hps_0_hps_io_hps_io_usb1_inst_D41:std_logic;     
+ hps_0_hps_io_hps_io_usb1_inst_D51:std_logic;     
+ hps_0_hps_io_hps_io_usb1_inst_D61:std_logic;     
+ hps_0_hps_io_hps_io_usb1_inst_D71:std_logic;     
+ hps_0_hps_io_hps_io_usb1_inst_CLK1:std_logic;    
+ hps_0_hps_io_hps_io_usb1_inst_STP1:std_logic;    
+ hps_0_hps_io_hps_io_usb1_inst_DIR1:std_logic;    
+ hps_0_hps_io_hps_io_usb1_inst_NXT1:std_logic;    
+ hps_0_hps_io_hps_io_spim1_inst_CLK1:std_logic;   
+ hps_0_hps_io_hps_io_spim1_inst_MOSI1:std_logic;  
+ hps_0_hps_io_hps_io_spim1_inst_MISO1:std_logic;  
+ hps_0_hps_io_hps_io_spim1_inst_SS01:std_logic;   
+ hps_0_hps_io_hps_io_uart0_inst_RX1:std_logic;    
+ hps_0_hps_io_hps_io_uart0_inst_TX1:std_logic;    
+ hps_0_hps_io_hps_io_i2c0_inst_SDA1:std_logic;    
+ hps_0_hps_io_hps_io_i2c0_inst_SCL1:std_logic;    
+ hps_0_hps_io_hps_io_i2c1_inst_SDA1:std_logic;    
+ hps_0_hps_io_hps_io_i2c1_inst_SCL1:std_logic;    
+ hps_0_hps_io_hps_io_gpio_inst_GPIO091:std_logic; 
+ hps_0_hps_io_hps_io_gpio_inst_GPIO351:std_logic; 
+ hps_0_hps_io_hps_io_gpio_inst_GPIO401:std_logic; 
+ hps_0_hps_io_hps_io_gpio_inst_GPIO531:std_logic; 
+ hps_0_hps_io_hps_io_gpio_inst_GPIO541:std_logic; 
+ hps_0_hps_io_hps_io_gpio_inst_GPIO611:std_logic; 
+ memory_mem_a1:std_logic_vector(14 downto 0);                         
+ memory_mem_ba1:std_logic_vector(2 downto 0);                        
+ memory_mem_ck1:std_logic;                        
+ memory_mem_ck_n1:std_logic;                      
+ memory_mem_cke1:std_logic;                       
+ memory_mem_cs_n1:std_logic;                      
+ memory_mem_ras_n1:std_logic;                     
+ memory_mem_cas_n1:std_logic;                     
+ memory_mem_we_n1:std_logic;                      
+ memory_mem_reset_n1:std_logic;                   
+ memory_mem_dq1:std_logic_vector(31 downto 0);                        
+ memory_mem_dqs1:std_logic_vector(3 downto 0) ;                       
+ memory_mem_dqs_n1:std_logic_vector(3 downto 0);                     
+ memory_mem_odt1:std_logic;                       
+ memory_mem_dm1:std_logic_vector(3 downto 0);                        
+ memory_oct_rzqin1:std_logic ;                     
+ reset_reset_n1:std_logic; 
