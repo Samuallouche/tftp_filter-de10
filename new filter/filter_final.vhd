@@ -38,7 +38,6 @@ if rising_edge(clk) then
 	if tx_en_in='0' then 	
 		port_des<=(others=>'0');
 		if reset_Sig='1' then
-			reset_data:="0000";
 			buffer_data(0):="00";
 			data_good<='0';			
 		end if;
@@ -58,10 +57,10 @@ if rising_edge(clk) then
 		if cnt_bus = 4 then
 			cnt_bus:=0;
 			cnt_byte<=cnt_byte+1;
-			bus_temp(7 downto 6)<=buffer_data(2);
-			bus_temp(5 downto 4)<=buffer_data(1);
-			bus_temp(3 downto 2)<=buffer_data(0);
-			bus_temp(1 downto 0)<=buffer_data(3);
+			bus_temp(7 downto 6)<=buffer_data(3);
+			bus_temp(5 downto 4)<=buffer_data(2);
+			bus_temp(3 downto 2)<=buffer_data(1);
+			bus_temp(1 downto 0)<=buffer_data(0);
 			---------------------------------------------
 			if cnt_byte=38+preamble then
 				if bus_temp=X"45" then
@@ -77,7 +76,7 @@ if rising_edge(clk) then
 				if (op_code/=X"01") and (port_des/=X"45") then
 						-----שחרור מידע מהפיפו
 				end if;
-			elsif ((cnt_byte>=45+preamble) and (cnt_byte<= 28+len+preamble)) then 
+			elsif ((cnt_byte>=45+preamble) and (cnt_byte<= 30+len+preamble)) then 
 				if bus_temp = X"2e" then
 					data_type<= (others => (others => '0'));
 					cnt_type_data:=0;
@@ -89,9 +88,10 @@ if rising_edge(clk) then
 				if cnt_type_data=5 then
 						data_arr<='0';
 					end if;
-			elsif (cnt_byte=29+len+preamble) and op_code=X"01" and port_des=X"45" then
+			elsif (cnt_byte=31+len+preamble) and op_code=X"01" and port_des=X"45" then
 				 if data_type(0)=X"74" and data_type(1)=X"78" and data_type(2)=X"74" then-----------לזהות מתי במידע שנשמר מגיע בית שהוא 0 וזה אומר שסוג המידע נגמר 
 						reset_Sig<='1';
+						reset_data:="0000";
 						data_good<='1';
 				 end if;		
 		end if;
