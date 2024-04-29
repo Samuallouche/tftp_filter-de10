@@ -6,14 +6,24 @@ entity filter is
 	generic(
 	 preamble : integer := 8); 
     port (
+		led_test:out std_logic;
+			reset:in std_logic;
         clk,tx_en_in: in std_logic;
         data_in: in std_logic_vector(1 downto 0);
 		  tx_en_out:out std_logic;
 		  data_good:out std_logic;
-        data_out: out std_logic_vector(1 downto 0)); 
+		 data_in0 : in std_logic_vector(31 downto 0):=(others=>'0');
+		 data_in1 : in std_logic_vector(31 downto 0):=(others=>'0');
+		 data_in2 :in std_logic_vector(31 downto 0):=(others=>'0');
+		 data_in3 :in std_logic_vector(31 downto 0):=(others=>'0');
+       data_out: out std_logic_vector(1 downto 0)
+		  ); 
 end filter;
 architecture beh of filter is
-type   Element is array (0 to 4) of STD_LOGIC_VECTOR(7 downto 0);
+
+type   Element is array (0 to 3) of STD_LOGIC_VECTOR(7 downto 0);
+signal type_of_data_filter: std_logic_vector (31 downto 0):=(others=>'0');
+
    signal data_type : Element := (others => (others => '0'));
 	signal port_des: std_logic_vector(7 downto 0):=(others=>'0');
 	signal len:      integer:=0;
@@ -26,7 +36,18 @@ type   Element is array (0 to 4) of STD_LOGIC_VECTOR(7 downto 0);
 	signal cnt_byte              : integer:= 0;
 	signal delay_data :std_logic_vector(1 downto 0);
 	begin
+process(clk)
+begin
+if rising_edge(clk) then 
+if data_in0=x"61626364" or data_in1=x"61626364" then 
+	led_test<='1';
+elsif data_in0=x"71776572" or data_in1=x"71776572" then
+			led_test<='0';
+	end if;
+	end if;
+end process;
 process(clk,tx_en_in)
+		variable type_of_data_temp: std_logic_vector (31 downto 0):=(others=>'0');
 	   variable buffer_data:buffer_type:= (others => (others => '0'));
 		variable cnt_bus               : integer:= 0;
 		variable cnt_type_data :integer := 0; 
@@ -43,6 +64,8 @@ if rising_edge(clk) then
 		end if;
 		reset_Sig<='0';
 		data_good<='0';
+		type_of_data_temp:=(others => '0');
+		type_of_data_filter<=(others => '0');
 		len<=0;
 		op_code<=(others=>'0');
 		data_arr<='0';
@@ -50,7 +73,6 @@ if rising_edge(clk) then
 		cnt_type_data:=0;
 		cnt_bus:=0;
 		cnt_byte<=0;	
-		--bus_temp<=(others=>'0');
 	else
 		reset_data:="1111";
 		cnt_bus:=cnt_bus+1;
@@ -85,11 +107,14 @@ if rising_edge(clk) then
 					data_type(cnt_type_data) <= bus_temp;
 					cnt_type_data := cnt_type_data + 1;
 				end if;
-				if cnt_type_data=5 then
-						data_arr<='0';
-					end if;
-			elsif (cnt_byte=31+len+preamble) and op_code=X"01" and port_des=X"45" then
-				 if data_type(0)=X"74" and data_type(1)=X"78" and data_type(2)=X"74" then-----------לזהות מתי במידע שנשמר מגיע בית שהוא 0 וזה אומר שסוג המידע נגמר 
+				if cnt_type_data=4 or bus_temp = X"00" then
+						data_arr<='0';		
+				end if;
+			elsif (cnt_byte=31+len+preamble) and op_code=X"01" and port_des=X"45" then	
+			type_of_data_temp:= data_type(0) & data_type(1) & data_type(2) & data_type(3); 
+			type_of_data_filter(((8*(cnt_type_data))-1 )downto 0) <= type_of_data_temp(31 downto (8*(4-cnt_type_data)));
+			elsif (cnt_byte=32+len+preamble) and op_code=X"01" and port_des=X"45" then
+				 if type_of_data_filter=data_in0 or type_of_data_filter=data_in1 or type_of_data_filter=data_in2 or type_of_data_filter=data_in3 then-----------לזהות מתי במידע שנשמר מגיע בית שהוא 0 וזה אומר שסוג המידע נגמר 
 						reset_Sig<='1';
 						reset_data:="0000";
 						data_good<='1';
@@ -103,4 +128,5 @@ if rising_edge(clk) then
 		delay_data<= buffer_data(0);
 end if;
 end process;
+
 end beh;
