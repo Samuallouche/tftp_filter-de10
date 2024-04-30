@@ -11,11 +11,9 @@
 
 
 void reverseString(char *inputString) {
-    int length = strlen(inputString);  // Find the length of the string
+    int length = strlen(inputString);  
     int i, j = length - 1;
     char temp;
-
-    // Swap characters starting from the ends moving towards the center
     for (i = 0; i < length / 2; i++) {
         temp = inputString[i];
         inputString[i] = inputString[j];
@@ -129,7 +127,6 @@ int main() {
         }
     }
 
-    // Cleanup
     if (munmap(virtual_base, HW_REGS_SPAN) != 0) {
         fprintf(stderr, "munmap() failed...\n");
     }
