@@ -47,7 +47,7 @@ int main() {
     }
     printf("Welcome to the tftp filter- a game changer in the network security");
     while (1) {
-        printf("What action would you like to do in the filter: (add+, delete-, reset X, exit ->, show » ) ");
+        printf("What action would you like to do in the filter: (add+, delete-, reset X, exit ->,show » ) \n");
         scanf("%s", command);
 
         if (strcmp(command, "exit") == 0) {
